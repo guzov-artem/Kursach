@@ -8,7 +8,7 @@ public class Ship implements Cloneable {
 
     public static class Cargo implements Cloneable {
 
-        public enum CargoType implements Cloneable { //делать классом
+        public enum CargoType implements Cloneable {
             LOOSE(0),
             LIQUID(1),
             CONTAINERS(2);
@@ -34,7 +34,7 @@ public class Ship implements Cloneable {
             type.speed = speed;
         }
 
-        public static CargoType makeCargoType(int type) throws Exception {
+        public static CargoType makeCargoType(int type) throws RuntimeException {
             switch (type) {
                 case 0: {
                     return CargoType.LOOSE;
@@ -45,7 +45,7 @@ public class Ship implements Cloneable {
                 case 2:
                     return CargoType.CONTAINERS;
             }
-            throw new Exception("type must be from 0 to 2!");
+            throw new RuntimeException("type must be from 0 to 2!");
         }
 
         public Object clone() throws CloneNotSupportedException {
@@ -81,6 +81,15 @@ public class Ship implements Cloneable {
                     '}';
         }
     }
+
+    private String name;
+    private Cargo cargo;//tons
+    private Calendar arriveDate;
+    private Integer numberCranes;
+    private Integer delay;
+    private Optional<Calendar> startUploading;
+    private Optional<Calendar> endUploading;
+    private Optional<Integer> uploadingDelay;
 
     public Ship(String name, Cargo cargo, Calendar date) {
         this.name = name;
@@ -198,15 +207,4 @@ public class Ship implements Cloneable {
                     - (Utils.getMinutes(second.getArriveDate()) + second.getDelay()));
         }
     }
-
-    private String name;
-    private Cargo cargo;//tons
-    private Calendar arriveDate;
-    private Integer numberCranes;
-    private Integer delay;
-    private Optional<Calendar> startUploading;
-    private Optional<Calendar> endUploading;
-    private Optional<Integer> uploadingDelay;
-
-
 }

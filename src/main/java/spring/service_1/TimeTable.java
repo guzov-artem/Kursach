@@ -4,30 +4,26 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import spring.Ship;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class TimeTable {
-    public TimeTable(int size)
-    {
-        try {
-            readTimeTableParams();
-            this.size = size;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public TimeTable(int size) throws IOException {
+        readTimeTableParams();
+        this.size = size;
         shipArrayList = new ArrayList[3];
-        for (int i = 0; i < shipArrayList.length; i++){
+        for (int i = 0; i < shipArrayList.length; i++) {
             shipArrayList[i] = new ArrayList<Ship>();
         }
     }
-    private void readTimeTableParams() throws FileNotFoundException {
-        JsonReader reader = new JsonReader(new FileReader(System.getProperty("user.dir")
-                + "/firstServiceDirectory/timetableParams.json"));
-        Map gsonParser = new Gson().fromJson(reader, Map.class);
-        speed = (ArrayList<Double>) gsonParser.get("speed");
-        names = (ArrayList<String>) gsonParser.get("names");
+    private void readTimeTableParams() throws IOException {
+        try (JsonReader reader = new JsonReader(new FileReader(System.getProperty("user.dir")
+                + "/firstServiceDirectory/timetableParams.json"))) {
+            Map gsonParser = new Gson().fromJson(reader, Map.class);
+            speed = (ArrayList<Double>) gsonParser.get("speed");
+            names = (ArrayList<String>) gsonParser.get("names");
+        }
     }
     public void generateShips() {
         for (int i = 0; i < size; i++) {
@@ -71,13 +67,9 @@ public class TimeTable {
             int minute = scanner.nextInt();
             System.out.print("Print seconds of arrive:");
             int second = scanner.nextInt();
-            try {
-                Ship newShip = new Ship(name, new Ship.Cargo(Ship.Cargo.makeCargoType(type), weight, this.speed.get(type)),
-                        new GregorianCalendar(year - 1900, month - 1, day, hour, minute, second));
-                shipArrayList[type].add(newShip);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            Ship newShip = new Ship(name, new Ship.Cargo(Ship.Cargo.makeCargoType(type), weight, this.speed.get(type)),
+                    new GregorianCalendar(year - 1900, month - 1, day, hour, minute, second));
+            shipArrayList[type].add(newShip);
         }
     }
 
@@ -94,18 +86,7 @@ public class TimeTable {
     private static Ship.Cargo makeRandomCargo()
     {
         Integer temp = random.nextInt(3);
-        Ship.Cargo.CargoType type = null;
-        switch (temp)
-        {
-            case 0: type = Ship.Cargo.CargoType.LOOSE;
-            break;
-
-            case 1: type = Ship.Cargo.CargoType.LIQUID;
-            break;
-
-            case 2: type = Ship.Cargo.CargoType.CONTAINERS;
-            break;
-        }
+        Ship.Cargo.CargoType type = Ship.Cargo.makeCargoType(temp);
         return new Ship.Cargo(type, random.nextDouble()* MAX_WEIGHT, speed.get(temp));
     }
 

@@ -1,7 +1,7 @@
 package spring;
 
 import org.springframework.boot.SpringApplication;
-import spring.service_1.Writer;
+import spring.service_1.FirstService;
 import spring.service_2.SecondService;
 import spring.service_3.ThirdService;
 
@@ -10,7 +10,7 @@ import java.util.Collections;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        SpringApplication app1 = new SpringApplication(Writer.class);
+        SpringApplication app1 = new SpringApplication(FirstService.class);
         SpringApplication app2 = new SpringApplication(SecondService.class);
         SpringApplication app3 = new SpringApplication(ThirdService.class);
         app1.setDefaultProperties(Collections
