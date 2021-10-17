@@ -3,12 +3,19 @@ package spring.service_1;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import spring.Ship;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
 public class TimeTable {
+
+    private static final int MAX_WEIGHT = 1000;
+    private static final Random random = new Random();
+    private static ArrayList<String> names;
+    private static ArrayList<Double> speed;
+    private ArrayList<Ship>[] shipArrayList;
+    private Integer size;
+
     public TimeTable(int size) throws IOException {
         readTimeTableParams();
         this.size = size;
@@ -89,11 +96,4 @@ public class TimeTable {
         Ship.Cargo.CargoType type = Ship.Cargo.makeCargoType(temp);
         return new Ship.Cargo(type, random.nextDouble()* MAX_WEIGHT, speed.get(temp));
     }
-
-    private final static int MAX_WEIGHT = 1000;
-    private static final Random random = new Random();
-    private static ArrayList<String> names;
-    private static ArrayList<Double> speed;
-    private ArrayList<Ship>[] shipArrayList;
-    private Integer size;
 }

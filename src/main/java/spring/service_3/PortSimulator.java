@@ -21,15 +21,14 @@ public class PortSimulator {
     }
     private void generateDelays() {
         Random random = new Random();
-        for (int i = 0; i < ships.length; i++) {
+        for (int i = 0; i < this.ships.length; i++) {
             for (int j = 0; j < ships[i].size(); j++) {
-                ships[i].get(j).setDelay(random.nextInt(2 * MAX_DELAY) - MAX_DELAY);
-                ships[i].get(j).setUploadingDelay(random.nextInt(MAX_UNLOADING_DELAY));
+                this.ships[i].get(j).setDelay(random.nextInt(2 * this.MAX_DELAY) - this.MAX_DELAY);
+                this.ships[i].get(j).setUploadingDelay(random.nextInt(this.MAX_UNLOADING_DELAY));
             }
         }
     }
     private void sortShips() {
-
         for (int i =0; i < ships.length; i++) {
             ships[i].sort(new Ship.ShipComparator());
         }
@@ -47,7 +46,6 @@ public class PortSimulator {
             threads.get(i).join();
             statistic.addStatisticStruct(threads.get(i).getStatisticStruct());
         }
-        Date date;
     }
 
     public Statistic getStatistic()

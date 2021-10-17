@@ -27,12 +27,15 @@ import java.util.GregorianCalendar;
 public class ThirdService {
     @GetMapping(value = "/run", produces = MediaType.APPLICATION_JSON_VALUE)
     public static HttpStatus runApp() throws InterruptedException, IOException, RestClientException,
-            JsonSyntaxException, JsonIOException {
+            JsonSyntaxException, JsonIOException, RuntimeException {
         RestTemplate restTemplate = new RestTemplate();
         String urlTimeTable = "http://localhost:8002/timetable?size=300";
-        ResponseEntity<String> response = restTemplate.getForEntity(urlTimeTable, String.class);
+        ResponseEntity<String> response1 = restTemplate.getForEntity(urlTimeTable, String.class);
+        if (response1.getStatusCode() != HttpStatus.OK) {
+            throw new RuntimeException("Exception in second service: " + response1.getBody());
+        }
 
-        ArrayList<Ship>[] ships = parseShips(response.getBody());
+        ArrayList<Ship>[] ships = parseShips(response1.getBody());
         Calendar start = new GregorianCalendar(2021, 3, 0, 0, 0, 0);
         Calendar end = new GregorianCalendar(2021, 4, 0, 0, 0, 0);
         PortSimulator portSimulator = new PortSimulator(ships, start, end);
@@ -43,15 +46,21 @@ public class ThirdService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> request = new HttpEntity<>(new Gson().toJson(stat), headers);
-        restTemplate.postForEntity(urlStatistic, request, String.class);
+        ResponseEntity<String> response2 = restTemplate.postForEntity(urlStatistic, request, String.class);
+
+        if (response2.getStatusCode() != HttpStatus.OK) {
+            throw new RuntimeException("Exception in second service: " + response1.getBody());
+        }
         return HttpStatus.OK;
     }
+
     static public ArrayList<Ship>[] parseShips(String string) throws IOException, JsonSyntaxException, JsonIOException {
-        Reader reader = new StringReader(string);
-        Gson gson = new GsonBuilder().setDateFormat("EEE, dd MMM yyyy HH:mm:ss").create();
-        Type SHIP_TYPE = new TypeToken<ArrayList<Ship>[]>() {}.getType();
-        ArrayList<Ship>[] ships = gson.fromJson(reader, SHIP_TYPE);
-        reader.close();
-        return ships;
+        try (Reader reader = new StringReader(string)) {
+            Gson gson = new GsonBuilder().setDateFormat("EEE, dd MMM yyyy HH:mm:ss").create();
+            Type SHIP_TYPE = new TypeToken<ArrayList<Ship>[]>() {
+            }.getType();
+            ArrayList<Ship>[] ships = gson.fromJson(reader, SHIP_TYPE);
+            return ships;
+        }
     }
 }

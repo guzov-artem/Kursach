@@ -32,7 +32,7 @@ public class UnloadingTask extends Thread {
                 currentstatisticThread = simulate(cranes++);
                 nextUnloadingTaskStatistic = simulate(cranes);
             }
-            unloadingTaskStatistic = currentstatisticThread;
+            this.unloadingTaskStatistic = currentstatisticThread;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -52,13 +52,13 @@ public class UnloadingTask extends Thread {
         unloadingTaskStatistic.setCranes(cranes);
         ArrayList<CraneThread> threads = new ArrayList<>();
         ArrayList<Ship> temp = new ArrayList<Ship>();
-        for (Ship ship : ships) {
+        for (Ship ship : this.ships) {
             temp.add((Ship) ship.clone());
         }
-        currentDate = (Calendar) portSimulator.getStartDate().clone();
+        this.currentDate = (Calendar) this.portSimulator.getStartDate().clone();
         Object mutexEndUnloading = new Object();
         for (int i = 0; i < cranes; i++) {
-            threads.add(new CraneThread(temp, unloadingTaskStatistic, currentDate,
+            threads.add(new CraneThread(temp, unloadingTaskStatistic, this.currentDate,
                     new Semaphore(0), new Semaphore(1), mutexEndUnloading));
             threads.get(i).start();
         }
@@ -71,7 +71,7 @@ public class UnloadingTask extends Thread {
                     e.printStackTrace();
                 }
             }
-            currentDate.setTimeInMillis(currentDate.getTimeInMillis() + 60 * 1000);
+            this.currentDate.setTimeInMillis(this.currentDate.getTimeInMillis() + 60 * 1000);
             for (CraneThread task : threads) {
                 task.getSemaphore2().release();
             }
@@ -84,6 +84,6 @@ public class UnloadingTask extends Thread {
     }
 
     public UnloadingTaskStatistic getStatisticStruct() {
-        return unloadingTaskStatistic;
+        return this.unloadingTaskStatistic;
     }
 }

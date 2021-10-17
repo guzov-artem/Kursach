@@ -12,7 +12,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import spring.Ship;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -62,7 +61,6 @@ public class SecondService {
                 + "/secondServiceDirectory/timetable.json"))) {
             Gson gson = new GsonBuilder().setDateFormat("EEE, dd MMM yyyy HH:mm:ss").create();
             gson.toJson(ships, ships.getClass(), writer);
-            writer.close();
         }
     }
 }

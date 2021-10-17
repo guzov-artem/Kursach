@@ -5,8 +5,17 @@ import java.util.Collections;
 import java.util.List;
 
 public class UnloadingTaskStatistic {
+    private static final int CRANE_COST = 30000;
+    private List<ShipStatistic> shipsStatistics;
+    private double fine;
+    private int waitingTime;
+    private int cranes;
+    public int delayTime;
+    private int unloadTime;
+    private Ship.Cargo.CargoType type;
+
     public UnloadingTaskStatistic(Ship.Cargo.CargoType type){
-        shipsStatistics = Collections.synchronizedList(new ArrayList());
+        this.shipsStatistics = Collections.synchronizedList(new ArrayList());
         this.type = type;
         this.fine = 0;
         this.waitingTime = 0;
@@ -14,14 +23,7 @@ public class UnloadingTaskStatistic {
         this.delayTime = 0;
         this.unloadTime = 0;
     }
-    private List<ShipStatistic> shipsStatistics;
-    private double fine;
-    private int waitingTime;
-    private int cranes;
-    public int delayTime;
-    private int unloadTime;
-    private static final int CRANE_COST = 30000;
-    private Ship.Cargo.CargoType type;
+
 
     synchronized public double getFine() {
         return fine;

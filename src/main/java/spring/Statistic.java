@@ -1,13 +1,5 @@
 package spring;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonWriter;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,51 +37,38 @@ public class Statistic {
         this.liquideCranes = 0;
         this.containerCranes = 0;
         this.looseCranes = 0;
-        statLiquidList = Collections.synchronizedList(new ArrayList());
-        statLooseList = Collections.synchronizedList(new ArrayList());
-        statContainerList = Collections.synchronizedList(new ArrayList());
+        this.statLiquidList = Collections.synchronizedList(new ArrayList());
+        this.statLooseList = Collections.synchronizedList(new ArrayList());
+        this.statContainerList = Collections.synchronizedList(new ArrayList());
     }
 
     synchronized public  void addStatisticStruct(UnloadingTaskStatistic unloadingTaskStatistic) {
         switch (unloadingTaskStatistic.getType()) {
             case LIQUID: {
-                statLiquidList = unloadingTaskStatistic.getShipsStatistics();
-                amountLiquide = statLiquidList.size();
-                liquideCranes = unloadingTaskStatistic.getCranes();
+                this.statLiquidList = unloadingTaskStatistic.getShipsStatistics();
+                this.amountLiquide = statLiquidList.size();
+                this.liquideCranes = unloadingTaskStatistic.getCranes();
             }
             break;
             case LOOSE: {
-                statLooseList = unloadingTaskStatistic.getShipsStatistics();
-                amountLoose = statLooseList.size();
-                looseCranes = unloadingTaskStatistic.getCranes();
+                this.statLooseList = unloadingTaskStatistic.getShipsStatistics();
+                this.amountLoose = statLooseList.size();
+                this.looseCranes = unloadingTaskStatistic.getCranes();
             }
             break;
             case CONTAINERS: {
-                statContainerList = unloadingTaskStatistic.getShipsStatistics();
-                amountContainer = statContainerList.size();
-                containerCranes = unloadingTaskStatistic.getCranes();
+                this.statContainerList = unloadingTaskStatistic.getShipsStatistics();
+                this.amountContainer = statContainerList.size();
+                this.containerCranes = unloadingTaskStatistic.getCranes();
             }
             break;
         }
-        unloadTime += unloadingTaskStatistic.getUnloadTime();
-        waitingTime += unloadingTaskStatistic.getWaitingTime();
-        delayTime += unloadingTaskStatistic.getDelayTime();
-        fine += unloadingTaskStatistic.getFine();
-        averageWaitingTime = waitingTime / (amountLoose + amountLiquide + amountContainer);
-        averageDelayTime = delayTime / (amountLoose + amountLiquide + amountContainer);
-        averageUnloadTime = unloadTime / (amountLoose + amountLiquide + amountContainer);
+        this.unloadTime += unloadingTaskStatistic.getUnloadTime();
+        this.waitingTime += unloadingTaskStatistic.getWaitingTime();
+        this.delayTime += unloadingTaskStatistic.getDelayTime();
+        this.fine += unloadingTaskStatistic.getFine();
+        this.averageWaitingTime = waitingTime / (amountLoose + amountLiquide + amountContainer);
+        this.averageDelayTime = delayTime / (amountLoose + amountLiquide + amountContainer);
+        this.averageUnloadTime = unloadTime / (amountLoose + amountLiquide + amountContainer);
     }
-
-    public void writeToFile(String name) throws IOException {
-        JsonWriter writer = new JsonWriter(new FileWriter(System.getProperty("user.dir") + "/" + name));
-        Gson gson = new GsonBuilder().setDateFormat("EEE, dd MMM yyyy HH:mm:ss").setPrettyPrinting().create();
-        Type TYPE = new TypeToken<Statistic>() {
-        }.getType();
-        gson.toJson(this, TYPE, writer);
-        writer.close();
-    }
-
-
 }
-
-
