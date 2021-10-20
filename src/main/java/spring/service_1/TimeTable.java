@@ -43,7 +43,6 @@ public class TimeTable {
     private void addShipFromConsole() {
         Scanner scanner = new Scanner(System.in);
         String answer;
-        Date date = new Date();
         while (true) {
             System.out.println("Do you want to add a ship manualy? y/n");
             answer = scanner.next();
@@ -59,7 +58,12 @@ public class TimeTable {
             System.out.println("Print ship`s name:");
             String name = scanner.next();
             System.out.println("Print ship`s type LOOSE LIQUID CONTAINER 0/1/2:");
-            int type = scanner.nextInt();
+            answer = scanner.next();
+            while (!answer.equals("0") && !answer.equals("1") && !answer.equals("2")) {
+                System.out.println("Print ship`s type LOOSE LIQUID CONTAINER 0/1/2:");
+                answer = scanner.next();
+            }
+            int type = Integer.parseInt(answer);
             System.out.println("Print ship`s weight:");
             Double weight = scanner.nextDouble();
             System.out.print("Print year of arrive:");
@@ -74,7 +78,7 @@ public class TimeTable {
             int minute = scanner.nextInt();
             System.out.print("Print seconds of arrive:");
             int second = scanner.nextInt();
-            Ship newShip = new Ship(name, new Ship.Cargo(Ship.Cargo.makeCargoType(type), weight, this.speed.get(type)),
+            Ship newShip = new Ship(name, new Ship.Cargo(Ship.makeCargoType(type), weight, this.speed.get(type)),
                     new GregorianCalendar(year - 1900, month - 1, day, hour, minute, second));
             shipArrayList[type].add(newShip);
         }
@@ -87,13 +91,13 @@ public class TimeTable {
     private static Ship makeRandomShip()
     {
       return new Ship(names.get(random.nextInt(names.size() - 1)), makeRandomCargo(),
-              new GregorianCalendar(2021,        3, random.nextInt(30), random.nextInt(24),
+              new GregorianCalendar(2021,        Calendar.MARCH, random.nextInt(30), random.nextInt(24),
               random.nextInt(60), random.nextInt(60)));
     }
     private static Ship.Cargo makeRandomCargo()
     {
         Integer temp = random.nextInt(3);
-        Ship.Cargo.CargoType type = Ship.Cargo.makeCargoType(temp);
-        return new Ship.Cargo(type, random.nextDouble()* MAX_WEIGHT, speed.get(temp));
+        Ship.Cargo.CargoType type = Ship.makeCargoType(temp);
+        return new Ship.Cargo(type, random.nextDouble() * MAX_WEIGHT, speed.get(temp));
     }
 }

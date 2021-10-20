@@ -11,7 +11,7 @@ public class FirstControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Response> handleException(Exception e) {
-        return new ResponseEntity<Response>(new Response(e.getMessage()), HttpStatus.OK);
+        return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
 }

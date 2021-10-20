@@ -17,7 +17,7 @@ public class PortSimulator {
         this.ships = ships;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.statistic = new Statistic();
+        this.statistic = new Statistic(startDate, endDate);
     }
     private void generateDelays() {
         Random random = new Random();
@@ -39,7 +39,7 @@ public class PortSimulator {
         sortShips();
         List<UnloadingTask> threads = new ArrayList<>();
         for (int i =0; i < ships.length; i++) {
-            threads.add(new UnloadingTask(this, ships[i]));
+            threads.add(new UnloadingTask(this, ships[i], Ship.Cargo.CargoType.getType(i)));
             threads.get(i).start();
         }
         for (int i =0; i < ships.length; i++) {

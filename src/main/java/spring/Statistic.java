@@ -1,6 +1,9 @@
 package spring;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,11 +22,20 @@ public class Statistic {
     private int liquideCranes;
     private int containerCranes;
     private int looseCranes;
+    private double averageLiquidQueue;
+    private double averageLooseQueue;
+    private double averageContainerQueue;
     private List<ShipStatistic> statLiquidList;
     private List<ShipStatistic> statLooseList;
     private List<ShipStatistic> statContainerList;
 
-    public Statistic() {
+    @JsonIgnore
+    private Calendar begin;
+
+    @JsonIgnore
+    private Calendar end;
+
+    public Statistic(Calendar begin, Calendar end) {
         this.unloadTime = 0;
         this.waitingTime = 0;
         this.delayTime = 0;
@@ -40,26 +52,32 @@ public class Statistic {
         this.statLiquidList = Collections.synchronizedList(new ArrayList());
         this.statLooseList = Collections.synchronizedList(new ArrayList());
         this.statContainerList = Collections.synchronizedList(new ArrayList());
+        this.begin = begin;
+        this.end = end;
     }
 
     synchronized public  void addStatisticStruct(UnloadingTaskStatistic unloadingTaskStatistic) {
+        long unloadingDuration = Utils.getMinutes(end) - Utils.getMinutes(begin);
         switch (unloadingTaskStatistic.getType()) {
             case LIQUID: {
                 this.statLiquidList = unloadingTaskStatistic.getShipsStatistics();
                 this.amountLiquide = statLiquidList.size();
                 this.liquideCranes = unloadingTaskStatistic.getCranes();
+                this.averageLiquidQueue = (double) unloadingTaskStatistic.getQueueSum() / unloadingDuration;
             }
             break;
             case LOOSE: {
                 this.statLooseList = unloadingTaskStatistic.getShipsStatistics();
                 this.amountLoose = statLooseList.size();
                 this.looseCranes = unloadingTaskStatistic.getCranes();
+                this.averageLooseQueue = (double) unloadingTaskStatistic.getQueueSum() / unloadingDuration;
             }
             break;
             case CONTAINERS: {
                 this.statContainerList = unloadingTaskStatistic.getShipsStatistics();
                 this.amountContainer = statContainerList.size();
                 this.containerCranes = unloadingTaskStatistic.getCranes();
+                this.averageContainerQueue = (double) unloadingTaskStatistic.getQueueSum() / unloadingDuration;
             }
             break;
         }
@@ -67,8 +85,10 @@ public class Statistic {
         this.waitingTime += unloadingTaskStatistic.getWaitingTime();
         this.delayTime += unloadingTaskStatistic.getDelayTime();
         this.fine += unloadingTaskStatistic.getFine();
-        this.averageWaitingTime = waitingTime / (amountLoose + amountLiquide + amountContainer);
-        this.averageDelayTime = delayTime / (amountLoose + amountLiquide + amountContainer);
-        this.averageUnloadTime = unloadTime / (amountLoose + amountLiquide + amountContainer);
+        if ((amountLoose + amountLiquide + amountContainer) > 0) {
+            this.averageWaitingTime = waitingTime / (amountLoose + amountLiquide + amountContainer);
+            this.averageDelayTime = delayTime / (amountLoose + amountLiquide + amountContainer);
+            this.averageUnloadTime = unloadTime / (amountLoose + amountLiquide + amountContainer);
+        }
     }
 }

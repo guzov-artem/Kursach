@@ -13,6 +13,7 @@ public class UnloadingTaskStatistic {
     public int delayTime;
     private int unloadTime;
     private Ship.Cargo.CargoType type;
+    private int queueSum;
 
     public UnloadingTaskStatistic(Ship.Cargo.CargoType type){
         this.shipsStatistics = Collections.synchronizedList(new ArrayList());
@@ -57,6 +58,10 @@ public class UnloadingTaskStatistic {
         return waitingTime;
     }
 
+    public void addQueueSum(int newQueue) {
+        this.queueSum += newQueue;
+    }
+
     synchronized private void addShipStatistic(ShipStatistic shipStatistic) {
         this.shipsStatistics.add(shipStatistic);
         if (shipStatistic.getWaitingTime() > 0) {
@@ -66,7 +71,12 @@ public class UnloadingTaskStatistic {
         this.unloadTime += shipStatistic.getUnloadTime();
         this.fine = (this.waitingTime / 60.0) * 100.0 + (this.cranes - 1) * this.CRANE_COST;
     }
+
     synchronized public void addShipToStatistic(Ship ship) {
         this.addShipStatistic(new ShipStatistic(ship));
+    }
+
+    public int getQueueSum() {
+        return queueSum;
     }
 }

@@ -23,7 +23,11 @@ import java.util.ArrayList;
 public class SecondService {
     @GetMapping(value = "/timetable", produces = MediaType.APPLICATION_JSON_VALUE)
     public static String getTimetable(@RequestParam(value = "size") int size) throws IOException,
-            RestClientException, JsonSyntaxException {
+            RestClientException, JsonSyntaxException, IllegalStateException, SecurityException,
+            NullPointerException, IllegalArgumentException {
+        if (size <= 0) {
+            throw new RuntimeException("Size must be more than zero!");
+        }
         Gson gsonOne = new GsonBuilder().setDateFormat("EEE, dd MMM yyyy HH:mm:ss").create();
         RestTemplateBuilder builder = new RestTemplateBuilder();
         RestTemplate restTemplate = builder.build();
@@ -56,7 +60,8 @@ public class SecondService {
             return "OK";
         }
     }
-    static private void writeToJson( ArrayList<Ship>[] ships) throws IOException {
+    static private void writeToJson( ArrayList<Ship>[] ships) throws IOException, SecurityException,
+            NullPointerException, IllegalArgumentException {
         try(JsonWriter writer = new JsonWriter(new FileWriter(System.getProperty("user.dir")
                 + "/secondServiceDirectory/timetable.json"))) {
             Gson gson = new GsonBuilder().setDateFormat("EEE, dd MMM yyyy HH:mm:ss").create();

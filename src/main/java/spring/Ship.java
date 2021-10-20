@@ -21,6 +21,21 @@ public class Ship implements Cloneable {
                 return number;
             }
 
+            public static CargoType getType(int typeNumber) {
+                switch (typeNumber) {
+                    case 0:  {
+                        return LOOSE;
+                    }
+                    case 1: {
+                        return LIQUID;
+                    }
+                    case 2: {
+                        return CONTAINERS;
+                    }
+                }
+                throw new RuntimeException("Programm needs number between 0 and 2!");
+            }
+
             private final int number;
             private double speed;
         }
@@ -32,20 +47,6 @@ public class Ship implements Cloneable {
             this.type = type;
             this.weight = weight;
             type.speed = speed;
-        }
-
-        public static CargoType makeCargoType(int type) throws RuntimeException {
-            switch (type) {
-                case 0: {
-                    return CargoType.LOOSE;
-                }
-                case 1: {
-                    return CargoType.LIQUID;
-                }
-                case 2:
-                    return CargoType.CONTAINERS;
-            }
-            throw new RuntimeException("type must be from 0 to 2!");
         }
 
         public Object clone() throws CloneNotSupportedException {
@@ -190,6 +191,20 @@ public class Ship implements Cloneable {
 
     public boolean isUnloaded() {
         return endUploading.isPresent();
+    }
+
+    public static Cargo.CargoType makeCargoType(int type) throws RuntimeException {
+        switch (type) {
+            case 0: {
+                return Cargo.CargoType.LOOSE;
+            }
+            case 1: {
+                return Cargo.CargoType.LIQUID;
+            }
+            case 2:
+                return Cargo.CargoType.CONTAINERS;
+        }
+        throw new RuntimeException("type must be from 0 to 2!");
     }
 
     @Override

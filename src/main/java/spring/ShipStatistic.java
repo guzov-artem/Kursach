@@ -28,11 +28,13 @@ class ShipStatistic {
         this.name = ship.getName();
         this.arrivalTime = ship.getArriveDate();
         this.startUnloadTime = ship.getStartUploading();
-        this.waitingTime = Utils.getMinutes(startUnloadTime) - Utils.getMinutes(arrivalTime);
+
         this.unloadTime = Utils.getMinutes(ship.getEndUnloading())
                 - Utils.getMinutes(ship.getStartUploading());
         this.type = ship.getCargo().getType();
         this.delay = ship.getDelay();
         this.endUnloadingTime = ship.getEndUnloading();
+        this.waitingTime = Utils.getMinutes(this.startUnloadTime) - Utils.getMinutes(this.arrivalTime)
+                - this.delay;
     }
 }
