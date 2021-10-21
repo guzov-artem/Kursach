@@ -6,6 +6,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClientException;
@@ -52,12 +53,12 @@ public class SecondService {
             return gson.toJson(ships);
         }
     }
-    @PostMapping(value = "/statistic", consumes = "application/json")
-    String postResults(@RequestBody String statiststicString) throws IOException {
+    @PostMapping(value = "/statistic", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    HttpStatus postResults(@RequestBody String statiststicString) throws IOException {
         try (FileWriter fileWriter = new FileWriter("secondServiceDirectory/statistic.json")) {
             fileWriter.write(statiststicString);
             fileWriter.close();
-            return "OK";
+            return HttpStatus.OK;
         }
     }
     static private void writeToJson( ArrayList<Ship>[] ships) throws IOException, SecurityException,

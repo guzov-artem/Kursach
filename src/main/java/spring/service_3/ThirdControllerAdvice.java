@@ -11,7 +11,7 @@ public class ThirdControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Response> handleException(Exception e) {
-        return new ResponseEntity<>(new Response(e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new Response(e.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
 }

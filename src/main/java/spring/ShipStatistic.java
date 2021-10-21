@@ -12,18 +12,6 @@ class ShipStatistic {
     private Ship.Cargo.CargoType type;
     private int delay;
 
-    public long getWaitingTime() {
-        return waitingTime;
-    }
-
-    public int getDelay() {
-        return delay;
-    }
-
-    public long getUnloadTime() {
-        return unloadTime;
-    }
-
     public ShipStatistic(Ship ship) {
         this.name = ship.getName();
         this.arrivalTime = ship.getArriveDate();
@@ -36,5 +24,17 @@ class ShipStatistic {
         this.endUnloadingTime = ship.getEndUnloading();
         this.waitingTime = Utils.getMinutes(this.startUnloadTime) - Utils.getMinutes(this.arrivalTime)
                 - this.delay;
+    }
+
+    public long getWaitingTime() {
+        return waitingTime;
+    }
+
+    public int getDelay() {
+        return delay;
+    }
+
+    public long getUnloadTime() {
+        return unloadTime;
     }
 }

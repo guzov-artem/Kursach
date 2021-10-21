@@ -28,12 +28,8 @@ public class Statistic {
     private List<ShipStatistic> statLiquidList;
     private List<ShipStatistic> statLooseList;
     private List<ShipStatistic> statContainerList;
-
-    @JsonIgnore
-    private Calendar begin;
-
-    @JsonIgnore
-    private Calendar end;
+    private transient Calendar begin;
+    private transient Calendar end;
 
     public Statistic(Calendar begin, Calendar end) {
         this.unloadTime = 0;
